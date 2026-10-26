@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Management System</title>
+</head>
+<body>
+
+    <h1>Contact Management System</h1>
+
+    <h3>1. Add Contact</h3>
+    <input type="text" id="name" placeholder="Enter name">
+    <input type="text" id="phone" placeholder="Enter phone number">
+    <button onclick="addContact()">Add Contact</button>
+
+    <hr>
+
+    <h3>2. Search by Keyword</h3>
+    <input type="text" id="keyword" placeholder="Enter keyword">
+    <button onclick="searchKeyword()">Search</button>
+
+    <h3>3. Search by Exact Name</h3>
+    <input type="text" id="searchName" placeholder="Enter exact name">
+    <button onclick="searchName()">Search</button>
+
+    <hr>
+
+    <h3>4. View All (Forward)</h3>
+    <button onclick="displayForward()">Display Forward</button>
+
+    <h3>5. View All (Backward)</h3>
+    <button onclick="displayBackward()">Display Backward</button>
+
+    <h3>Results</h3>
+    <p id="message"></p>
+    <ul id="results"></ul>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
