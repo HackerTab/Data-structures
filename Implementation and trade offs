@@ -1,0 +1,229 @@
+// ==========================================
+// 1. QUEUE IMPLEMENTATIONS
+// ==========================================
+
+// Array-Based Queue (Fixed Size)
+class ArrayQueue {
+  constructor(capacity) {
+    this.capacity = capacity;
+    this.queue = new Array(capacity);
+    this.front = 0;
+    this.rear = -1;
+    this.size = 0;
+  }
+
+  isEmpty() {
+    return this.size === 0;
+  }
+
+  enqueue(element) {
+    if (this.size === this.capacity) {
+      throw new Error("Queue is full");
+    }
+    this.rear = (this.rear + 1) % this.capacity;
+    this.queue[this.rear] = element;
+    this.size++;
+  }
+
+  dequeue() {
+    if (this.isEmpty()) {
+      throw new Error("Queue is empty");
+    }
+    const item = this.queue[this.front];
+    this.queue[this.front] = undefined;
+    this.front = (this.front + 1) % this.capacity;
+    this.size--;
+    return item;
+  }
+
+  peek() {
+    if (this.isEmpty()) {
+      throw new Error("Queue is empty");
+    }
+    return this.queue[this.front];
+  }
+}
+
+// Linked List-Based Queue (Dynamic Size)
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
+
+class LinkedListQueue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
+
+  isEmpty() {
+    return this.head === null;
+  }
+
+  enqueue(element) {
+    const newNode = new Node(element);
+    if (this.isEmpty()) {
+      this.head = this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+  }
+
+  dequeue() {
+    if (this.isEmpty()) {
+      throw new Error("Queue is empty");
+    }
+    const value = this.head.value;
+    this.head = this.head.next;
+    if (this.head === null) {
+      this.tail = null;
+    }
+    return value;
+  }
+
+  peek() {
+    if (this.isEmpty()) {
+      throw new Error("Queue is empty");
+    }
+    return this.head.value;
+  }
+}
+
+// ==========================================
+// 2. PRIORITY QUEUE IMPLEMENTATIONS
+// ==========================================
+
+// Min-Heap-Based Priority Queue
+class MinHeapPriorityQueue {
+  constructor() {
+    this.heap = [];
+  }
+
+  isEmpty() {
+    return this.heap.length === 0;
+  }
+
+  peekMin() {
+    if (this.isEmpty()) {
+      throw new Error("Priority Queue is empty");
+    }
+    return this.heap[0];
+  }
+
+  insert(element) {
+    this.heap.push(element);
+    let i = this.heap.length - 1;
+
+    // Bubble up
+    while (i > 0) {
+      const parent = Math.floor((i - 1) / 2);
+      if (this.heap[i] >= this.heap[parent]) break;
+      [this.heap[i], this.heap[parent]] = [this.heap[parent], this.heap[i]];
+      i = parent;
+    }
+  }
+
+  extractMin() {
+    if (this.isEmpty()) {
+      throw new Error("Priority Queue is empty");
+    }
+    if (this.heap.length === 1) {
+      return this.heap.pop();
+    }
+
+    const min = this.heap[0];
+    this.heap[0] = this.heap.pop();
+
+    // Bubble down
+    let i = 0;
+    while (true) {
+      let smallest = i;
+      const left = 2 * i + 1;
+      const right = 2 * i + 2;
+
+      if (left < this.heap.length && this.heap[left] < this.heap[smallest]) {
+        smallest = left;
+      }
+      if (right < this.heap.length && this.heap[right] < this.heap[smallest]) {
+        smallest = right;
+      }
+      if (smallest === i) break;
+
+      [this.heap[i], this.heap[smallest]] = [this.heap[smallest], this.heap[i]];
+      i = smallest;
+    }
+
+    return min;
+  }
+}
+
+// Ordered Array-Based Priority Queue
+class OrderedArrayPriorityQueue {
+  constructor() {
+    this.items = []; // Kept in descending order so smallest is at the end
+  }
+
+  isEmpty() {
+    return this.items.length === 0;
+  }
+
+  peekMin() {
+    if (this.isEmpty()) {
+      throw new Error("Priority Queue is empty");
+    }
+    return this.items[this.items.length - 1];
+  }
+
+  insert(element) {
+    let i = 0;
+    while (i < this.items.length && this.items[i] > element) {
+      i++;
+    }
+    this.items.splice(i, 0, element);
+  }
+
+  extractMin() {
+    if (this.isEmpty()) {
+      throw new Error("Priority Queue is empty");
+    }
+    return this.items.pop();
+  }
+}
+
+// ==========================================
+// 3. QUICK TEST & EDGE CASES
+// ==========================================
+
+// ArrayQueue test
+const aq = new ArrayQueue(2);
+aq.enqueue(10);
+aq.enqueue(20);
+console.log("ArrayQueue peek:", aq.peek());       // 10
+console.log("ArrayQueue dequeue:", aq.dequeue()); // 10
+
+// LinkedListQueue test
+const llq = new LinkedListQueue();
+llq.enqueue("A");
+llq.enqueue("B");
+console.log("LinkedListQueue dequeue:", llq.dequeue()); // "A"
+
+// MinHeapPriorityQueue test
+const heapPQ = new MinHeapPriorityQueue();
+[30, 10, 20].forEach(n => heapPQ.insert(n));
+console.log("HeapPQ extractMin:", heapPQ.extractMin()); // 10
+
+// OrderedArrayPriorityQueue test
+const arrayPQ = new OrderedArrayPriorityQueue();
+[30, 10, 20].forEach(n => arrayPQ.insert(n));
+console.log("ArrayPQ extractMin:", arrayPQ.extractMin()); // 10
+
+// Edge case example
+try {
+  aq.enqueue(30);
+  aq.enqueue(40); // Throws "Queue is full"
+} catch (err) {
+  console.log("Caught expected error:", err.message);
+}
